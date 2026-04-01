@@ -1,0 +1,38 @@
+<mujoco model="inverted_pendulum">
+    <option timestep="0.002" integrator="RK4" gravity="0 0 -9.81" solver="Newton" iterations="50" tolerance="1e-10"/>
+    <asset>
+        <texture name="grid" type="2d" builtin="checker" width="512" height="512" rgb1=".1 .2 .3" rgb2=".2 .3 .4"/>
+        <material name="grid" texture="grid" texrepeat="1 1" texuniform="true" reflectance=".2"/>
+        <material name="cart_mat" rgba=".2 .5 .8 1"/>
+        <material name="pole_mat" rgba=".9 .4 .1 1"/>
+        <material name="hinge_mat" rgba=".8 .8 .1 1"/>
+    </asset>
+    <worldbody>
+        <camera name="view_2d" pos="0 -3 0.5" euler="90 0 0"/>
+        <!-- Light -->
+        <light name="main_light" pos="0 0 4" dir="0 0 -1" diffuse=".8 .8 .8" specular=".3 .3 .3" castshadow="true"/>
+        <!-- Floor -->
+        <geom name="floor" type="plane" size="5 2 .05" material="grid" friction="0 0 0" condim="1"/>
+        <!-- Rail -->
+        <geom name="rail" type="capsule" size="0.02" fromto="-2.4 0 0.05 2.4 0 0.05" rgba=".5 .5 .5 .4" contype="0" conaffinity="0"/>
+
+        <body name="cart" pos="0 0 0.05">
+            <joint name="slider" type="slide" axis="1 0 0" range="-2.4 2.4" damping="0.5"/>
+                <geom name="cart_geom" type="box" size="0.15 0.08 0.05" material="cart_mat" mass="0.5" friction="0 0 0"/>
+            <!-- Wheels (visual only) -->
+            <geom name="wheel_fl" type="cylinder" size="0.04 0.01" pos=".11 .07 -0.01" euler="90 0 0" rgba=".3 .3 .3 1" contype="0" conaffinity="0"/>
+            <geom name="wheel_fr" type="cylinder" size="0.04 0.01" pos=".11 -.07 -0.01" euler="90 0 0" rgba=".3 .3 .3 1" contype="0" conaffinity="0"/>
+            <geom name="wheel_bl" type="cylinder" size="0.04 0.01" pos="-.11 .07 -0.01" euler="90 0 0" rgba=".3 .3 .3 1" contype="0" conaffinity="0"/>
+            <geom name="wheel_br" type="cylinder" size="0.04 0.01" pos="-.11 -.07 -0.01" euler="90 0 0" rgba=".3 .3 .3 1" contype="0" conaffinity="0"/>
+            <!-- Hinge visual -->
+            <geom name="hinge_vis" type="cylinder" size="0.025 0.045" pos="0 0 0.05" euler="90 0 0" material="hinge_mat" contype="0" conaffinity="0"/>
+            <!-- Pole -->
+
+            <body name="pole">
+                <joint name="hinge" type="hinge" axis="0 1 0" range="-3.1416 3.1416" damping="0.1"/>
+                <geom name="pole_geom" type="capsule" fromto="0 0 0 0 0 0.6" size=".015" material="pole_mat"/>
+                    <geom name="ball_geom" type="sphere" size="0.035" pos="0 0 0.6" rgba=".9 .2 .2 1" mass="0.2"/>
+            </body>
+        </body>
+    </worldbody>
+</mujoco>
